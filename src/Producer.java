@@ -11,7 +11,8 @@ public class Producer {
         this.price=price;
     }
     void mang_warehouse(int val){
-        this.stock=this.stock - val;
+            this.stock = this.stock - val;
+            System.out.println("Updated successfully\n");
     }
     void disp_warehouse(){
         System.out.println(id+"\t"+name+"\t"+stock+"\t"+price);

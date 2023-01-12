@@ -3,28 +3,40 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Retailer extends Wholesaler{
-    static int no_of_Wholesaler;
-    static int no_of_retailer;
     int r_id;
     String r_name;
-    int ret_stock;
-    String ret_pname;
-    int ret_price;
-    Retailer(int id,String name,int stock,String p_name,int price){
+    ArrayList<Producer> retail_productlist=new ArrayList<>();
+    Retailer(int id,String name){
         this.r_id=id;
         this.r_name=name;
-        this.ret_stock=stock;
-        this.ret_pname=p_name;
-        this.ret_price=price;
+        this.retail_productlist.add(new Producer(100,"iphone12",1000,55000));
+        this.retail_productlist.add(new Producer(101,"iphone13",1000,60000));
+        this.retail_productlist.add(new Producer(102,"iphone14",1000,65000));
     }
-    void add_stock(int ret_stock){
-        this.ret_stock=this.ret_stock+ret_stock;
+    void add_stock(Producer whole_stock){
+        for(Producer prod1: retail_productlist) {
+            if (prod1.id == whole_stock.id){
+//                System.out.println("hello");
+                prod1.stock=prod1.stock+whole_stock.stock;
+//                super.mang_warehouse(whole_stock.id,whole_stock.stock);
+            }
+        }
     }
-    void mang_ret_stock(int val){
-        this.ret_stock=this.ret_stock+val;
-    }
+
     void disp_ret_stock(){
-        System.out.println(r_id+"\t"+r_name+"\t"+ret_stock+"\t"+ret_pname+"\t"+ret_price);
+        System.out.println(r_id+"\t"+r_name+" has products like");
+        try {
+            if (retail_productlist.size() == 0) {
+                System.out.println("No product available");
+            } else {
+                for (Producer r_list : this.retail_productlist) {
+                    System.out.println("\t"+r_list.id + "\t" + r_list.name + "\t" + r_list.stock + "\t" + r_list.price);
+                }
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
     public static void main(String args[]){
 
@@ -44,7 +56,7 @@ public class Retailer extends Wholesaler{
         }catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        Producer apple[] = new Producer[30];
+        Producer apple[] = new Producer[10];
         for(int i=0;i<prod.size();i++){
             apple[i]= new Producer(Integer.parseInt(prod.get(i).get(0)),prod.get(i).get(1),Integer.parseInt(prod.get(i).get(2)),Integer.parseInt(prod.get(i).get(3)));
         }
@@ -66,10 +78,10 @@ public class Retailer extends Wholesaler{
         }catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        no_of_Wholesaler=whole.size();
-        Wholesaler wholesaler[] = new Wholesaler[30];
+
+        Wholesaler wholesaler[] = new Wholesaler[10];
         for(int i=0;i<whole.size();i++){
-            wholesaler[i]= new Wholesaler(Integer.parseInt(whole.get(i).get(0)),whole.get(i).get(1),Integer.parseInt(whole.get(i).get(2)),whole.get(i).get(3),Integer.parseInt(whole.get(i).get(4)));
+            wholesaler[i]= new Wholesaler(Integer.parseInt(whole.get(i).get(0)),whole.get(i).get(1));
         }
 
 
@@ -89,10 +101,9 @@ public class Retailer extends Wholesaler{
         }catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        no_of_retailer = ret.size();
-        Retailer retailer[] = new Retailer[30];
+        Retailer retailer[] = new Retailer[10];
         for(int i=0;i<ret.size();i++){
-            retailer[i]= new Retailer(Integer.parseInt(ret.get(i).get(0)),ret.get(i).get(1),Integer.parseInt(ret.get(i).get(2)),ret.get(i).get(3),Integer.parseInt(ret.get(i).get(4)));
+            retailer[i]= new Retailer(Integer.parseInt(ret.get(i).get(0)),ret.get(i).get(1));
         }
 
 
@@ -101,7 +112,7 @@ public class Retailer extends Wholesaler{
         boolean check=true;
 
         while(check) {
-            System.out.println("Choose action\n1. View Producer\n2. View Wholesaler\n3. Retailer\n4. Add to wholesaler\n5. Add to Retailer\n6. Exit");
+            System.out.println("--------------Choose action--------------\n1. View Producer\n2. View Wholesaler\n3. View Retailer\n4. Add to wholesaler\n5. Add to Retailer\n6. Exit");
             int role = sc.nextInt();
             switch (role) {
                 case 1:
@@ -110,73 +121,168 @@ public class Retailer extends Wholesaler{
                     }
                     break;
                 case 2:
-                    for(int i=0;i<no_of_Wholesaler;i++){
+                    for(int i=0;i<3;i++){
                         wholesaler[i].disp_whole_stock();
                     }
                     break;
                 case 3:
-                    for(int i=0;i<no_of_retailer;i++){
+                    for(int i=0;i<3;i++){
                         retailer[i].disp_ret_stock();
                     }
                     break;
                 case 4:
-                    System.out.println("Enter Wholesaler name: ");
-                    String choose_wholesaler = sc.next();
-                    for(int i=0;i<no_of_Wholesaler;i++){
-                        System.out.println(choose_wholesaler.getClass().getSimpleName());
-                        System.out.println((wholesaler[i].w_name).getClass().getSimpleName());
-                        if(choose_wholesaler == wholesaler[i].w_name){
-                            System.out.println("hello");
-                            System.out.println("Enter product name: ");
-                            String choose_prod = sc.next();
-                            System.out.println("Enter product quantity: ");
-                            int product_qty = sc.nextInt();
-                            if(choose_prod == wholesaler[i].prod_name){
-                                wholesaler[i].add_stock(product_qty);
-                                for(int j=0;j<3;j++){
-                                    if(apple[i].name == choose_prod){
-                                        apple[i].mang_warehouse(product_qty);
+                    System.out.println("Choose wholesaler\n1. Wholesaler1\n2. Wholesaler2\n3. Wholesaler3");
+                    int choose_wholesaler = sc.nextInt();
+                    switch (choose_wholesaler){
+                        case 1:
+                            System.out.println("Want to buy\n1. iphone12\n2. iphone13\n3. iphone14");
+                            int choose_product= sc.nextInt();
+                            System.out.println("Mention the Quantity");
+                            int choose_qty = sc.nextInt();
+                            switch (choose_product){
+                                case 1:
+                                    if(apple[0].stock>choose_qty) {
+                                        apple[0].mang_warehouse(choose_qty);
+                                        Producer obj = new Producer(100, "iphone12", choose_qty, 1);
+                                        wholesaler[0].add_stock(obj);
                                     }
-                                }
+                                    else{System.out.println("The available stock is"+apple[0].stock);}
+                                    break;
+                                case 2:
+                                    if(apple[1].stock>choose_qty) {
+                                        apple[1].mang_warehouse(choose_qty);
+                                        Producer obj1 = new Producer(101, "iphone13", choose_qty, 1);
+                                        wholesaler[0].add_stock(obj1);
+                                    }else{System.out.println("The available stock is"+apple[1].stock);}
+                                    break;
+                                case 3:
+                                    if(apple[2].stock>choose_qty) {
+                                        apple[2].mang_warehouse(choose_qty);
+                                        Producer obj2 = new Producer(102, "iphone13", choose_qty, 1);
+                                        wholesaler[0].add_stock(obj2);
+                                    }else{System.out.println("The available stock is"+apple[2].stock);}
+                                    break;
                             }
-                            else {
-                                wholesaler[i]= new Wholesaler(152,choose_wholesaler,product_qty,choose_prod,0);
-                                no_of_Wholesaler=no_of_Wholesaler+1;
-                                apple[i].mang_warehouse(product_qty);
+                            break;
+                        case 2:
+                            System.out.println("Want to buy\n1. iphone12\n2. iphone13\n3. iphone14");
+                            int choose_product1= sc.nextInt();
+                            System.out.println("Mention the Quantity");
+                            int choose_qty1 = sc.nextInt();
+                            switch (choose_product1){
+                                case 1:
+                                    if(apple[0].stock>choose_qty1) {
+                                        apple[0].mang_warehouse(choose_qty1);
+                                        Producer obj = new Producer(100, "iphone12", choose_qty1, 1);
+                                        wholesaler[1].add_stock(obj);
+                                    }else{System.out.println("The available stock is"+apple[0].stock);}
+                                    break;
+                                case 2:
+                                    if(apple[1].stock>choose_qty1) {
+                                        apple[1].mang_warehouse(choose_qty1);
+                                        Producer obj1 = new Producer(101, "iphone13", choose_qty1, 1);
+                                        wholesaler[1].add_stock(obj1);
+                                    }else{System.out.println("The available stock is"+apple[1].stock);}
+                                    break;
+                                case 3:
+                                    if(apple[2].stock>choose_qty1) {
+                                        apple[2].mang_warehouse(choose_qty1);
+                                        Producer obj2 = new Producer(102, "iphone13", choose_qty1, 1);
+                                        wholesaler[1].add_stock(obj2);
+                                    }else{System.out.println("The available stock is"+apple[2].stock);}
+                                    break;
                             }
-                        }
+                            break;
+                        case 3:
+                            System.out.println("Want to buy\n1. iphone12\n2. iphone13\n3. iphone14");
+                            int choose_product2= sc.nextInt();
+                            System.out.println("Mention the Quantity");
+                            int choose_qty2 = sc.nextInt();
+                            switch (choose_product2){
+                                case 1:
+                                    if(apple[0].stock>choose_qty2) {
+                                        apple[0].mang_warehouse(choose_qty2);
+                                        Producer obj = new Producer(100, "iphone12", choose_qty2, 1);
+                                        wholesaler[2].add_stock(obj);
+                                    }else{System.out.println("The available stock is"+apple[0].stock);}
+                                    break;
+                                case 2:
+                                    if(apple[1].stock>choose_qty2) {
+                                        apple[1].mang_warehouse(choose_qty2);
+                                        Producer obj1 = new Producer(101, "iphone13", choose_qty2, 1);
+                                        wholesaler[2].add_stock(obj1);
+                                    }else{System.out.println("The available stock is"+apple[1].stock);}
+                                    break;
+                                case 3:
+                                    if(apple[2].stock>choose_qty2) {
+                                        apple[2].mang_warehouse(choose_qty2);
+                                        Producer obj2 = new Producer(102, "iphone13", choose_qty2, 1);
+                                        wholesaler[2].add_stock(obj2);
+                                    }else{System.out.println("The available stock is"+apple[2].stock);}
+                                    break;
+                            }
+                            break;
                     }
+                    break;
+
                 case 5:
-                    System.out.println("Enter retailer name: ");
-                    String choose_retailer = sc.next();
-                    for(int i=0;i<no_of_retailer;i++){
-                        System.out.println(choose_retailer.getClass().getSimpleName());
-                        System.out.println((retailer[i].r_name).getClass().getSimpleName());
-                        if(choose_retailer == retailer[i].r_name){
-                            System.out.println("hello");
-                            System.out.println("Enter product name: ");
-                            String choose_prod = sc.next();
-                            System.out.println("Enter product quantity: ");
-                            int product_qty = sc.nextInt();
-                            if(choose_prod == retailer[i].ret_pname){
-                                retailer[i].add_stock(product_qty);
-                                for(int j=0;j<no_of_Wholesaler;j++){
-                                    if(wholesaler[i].prod_name == choose_prod){
-                                        wholesaler[i].mang_whole_stock(product_qty);
+                    System.out.println("Choose retailer\n1. Retailer1\n2. Retailer2\n3. Retailer3");
+                    int choose_retailer = sc.nextInt();
+                    System.out.println("Choose wholesaler\n1. Wholesaler1\n2. Wholesaler2\n3. Wholesaler3");
+                    int choose_wholesaler3 = sc.nextInt();
+                    Wholesaler find_wholesaler=wholesaler[choose_wholesaler3-1];
+//                    switch (choose_wholesaler3){
+//                        case 1:
+                            System.out.println("Want to buy\n1. iphone12\n2. iphone13\n3. iphone14");
+                            int choose_product3= sc.nextInt();
+                            System.out.println("Mention the Quantity");
+                            int choose_qty3 = sc.nextInt();
+                            switch (choose_product3){
+                                case 1:
+                                    for(Producer obj_check: find_wholesaler.whole_productlist) {
+                                        if(obj_check.id==100){
+                                            if (obj_check.stock > choose_qty3) {
+                                                find_wholesaler.mang_whole_stock(choose_qty3,100);
+                                                Producer obj = new Producer(100, "iphone12", choose_qty3, 1);
+                                                retailer[choose_retailer - 1].add_stock(obj);
+                                            } else {
+                                                System.out.println("The available stock is" + obj_check.stock);
+                                            }
+                                        }
                                     }
-                                }
+                                    break;
+                                case 2:
+                                    for(Producer obj_check: find_wholesaler.whole_productlist) {
+                                        if(obj_check.id==100){
+                                            if (obj_check.stock > choose_qty3) {
+                                                find_wholesaler.mang_whole_stock(choose_qty3,101);
+                                                Producer obj = new Producer(101, "iphone13", choose_qty3, 1);
+                                                retailer[choose_retailer - 1].add_stock(obj);
+                                            } else {
+                                                System.out.println("The available stock is" + obj_check.stock);
+                                            }
+                                        }
+                                    }
+                                    break;
+                                case 3:
+                                    for(Producer obj_check: find_wholesaler.whole_productlist) {
+                                        if(obj_check.id==100){
+                                            if (obj_check.stock > choose_qty3) {
+                                                find_wholesaler.mang_whole_stock(choose_qty3,102);
+                                                Producer obj = new Producer(102, "iphone13", choose_qty3, 1);
+                                                retailer[choose_retailer - 1].add_stock(obj);
+                                            } else {
+                                                System.out.println("The available stock is" + obj_check.stock);
+                                            }
+                                        }
+                                    }
+                                    break;
                             }
-                            else {
-                                retailer[i]= new Retailer(152,choose_retailer,product_qty,choose_prod,0);
-                                no_of_retailer=no_of_retailer+1;
-                                wholesaler[i].mang_whole_stock(product_qty);
-                            }
-                        }
-                    }
+                            break;
+
                 case 6:
                     check = false;
             }
         }
-
     }
 }
